@@ -36,12 +36,18 @@ namespace ByteBank.View
         {
             var contas = r_Repositorio.GetContaClientes();
 
-            var contasQuantidadePorThread = contas.Count() / 4;
+            var quantidadeDeContasPorThread = contas.Count() / 8;
 
-            var contas_parte1 = contas.Take(contasQuantidadePorThread);
-            var contas_parte2 = contas.Skip(contasQuantidadePorThread).Take(contasQuantidadePorThread);
-            var contas_parte3 = contas.Skip(contasQuantidadePorThread*2).Take(contasQuantidadePorThread);
-            var contas_parte4 = contas.Skip(contasQuantidadePorThread*3);
+            var contas_parte1 = contas.Take(quantidadeDeContasPorThread);
+            var contas_parte2 = contas.Take(quantidadeDeContasPorThread).Take(quantidadeDeContasPorThread);
+            var contas_parte3 = contas.Take(quantidadeDeContasPorThread * 2).Take(quantidadeDeContasPorThread);
+            var contas_parte4 = contas.Take(quantidadeDeContasPorThread * 3).Take(quantidadeDeContasPorThread);
+            var contas_parte5 = contas.Take(quantidadeDeContasPorThread * 4).Take(quantidadeDeContasPorThread);
+            var contas_parte6 = contas.Take(quantidadeDeContasPorThread * 5).Take(quantidadeDeContasPorThread);
+            var contas_parte7 = contas.Take(quantidadeDeContasPorThread * 6).Take(quantidadeDeContasPorThread);
+            var contas_parte8 = contas.Take(quantidadeDeContasPorThread * 7);
+
+
 
             var resultado = new List<string>();
 
@@ -65,6 +71,7 @@ namespace ByteBank.View
                     resultado.Add(resultadoProcessamento);
                 }
             });
+
             Thread thread_parte3 = new Thread(() =>
             {
                 foreach (var conta in contas_parte3)
@@ -81,19 +88,56 @@ namespace ByteBank.View
                     resultado.Add(resultadoProcessamento);
                 }
             });
+            Thread thread_parte5 = new Thread(() =>
+            {
+                foreach (var conta in contas_parte5)
+                {
+                    var resultadoProcessamento = r_Servico.ConsolidarMovimentacao(conta);
+                    resultado.Add(resultadoProcessamento);
+                }
+            });
+            Thread thread_parte6 = new Thread(() =>
+            {
+                foreach (var conta in contas_parte6)
+                {
+                    var resultadoProcessamento = r_Servico.ConsolidarMovimentacao(conta);
+                    resultado.Add(resultadoProcessamento);
+                }
+            });
+            Thread thread_parte7 = new Thread(() =>
+            {
+                foreach (var conta in contas_parte7)
+                {
+                    var resultadoProcessamento = r_Servico.ConsolidarMovimentacao(conta);
+                    resultado.Add(resultadoProcessamento);
+                }
+            });
+            Thread thread_parte8 = new Thread(() =>
+            {
+                foreach (var conta in contas_parte8)
+                {
+                    var resultadoProcessamento = r_Servico.ConsolidarMovimentacao(conta);
+                    resultado.Add(resultadoProcessamento);
+                }
+            });
+
 
             thread_parte1.Start();
             thread_parte2.Start();
             thread_parte3.Start();
             thread_parte4.Start();
+            thread_parte5.Start();
+            thread_parte6.Start();
+            thread_parte7.Start();
+            thread_parte8.Start();
 
-            while (thread_parte1.IsAlive || thread_parte2.IsAlive
-                || thread_parte3.IsAlive || thread_parte4.IsAlive )
+            while (thread_parte1.IsAlive || thread_parte2.IsAlive || thread_parte3.IsAlive || thread_parte4.IsAlive
+                || thread_parte5.IsAlive || thread_parte6.IsAlive || thread_parte7.IsAlive || thread_parte8.IsAlive)
             {
                 Thread.Sleep(250);
-                //Não vou fazer nada
+                // Não vou fazer nada.
             }
-            
+
             var fim = DateTime.Now;
 
             AtualizarView(resultado, fim - inicio);
