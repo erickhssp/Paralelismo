@@ -3,7 +3,6 @@ using ByteBank.Core.Repository;
 using ByteBank.Core.Service;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,10 +42,8 @@ namespace ByteBank.View
         private async Task<string[]> ConsolidarContas(IEnumerable<ContaCliente> contas)
         {
             var tasks = contas.Select(conta =>
-                          Task.Factory.StartNew(() =>
-                                r_Servico.ConsolidarMovimentacao(conta))
-                );
-
+                Task.Factory.StartNew(() => r_Servico.ConsolidarMovimentacao(conta))
+            );
 
             return await Task.WhenAll(tasks);
         }
